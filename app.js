@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const request = require('./util/request')
 const packageJSON = require('./package.json')
 const exec = require('child_process').exec
-const cache = require('apicache').middleware
+const cache = require('./util/apicache').middleware
 
 // version check
 exec('npm info NeteaseCloudMusicApi version', (err, stdout, stderr) => {
@@ -74,7 +74,7 @@ fs.readdirSync(path.join(__dirname, 'module')).reverse().forEach(file => {
         res.status(answer.status).send(answer.body)
       })
       .catch(answer => {
-        console.log('[ERR]', decodeURIComponent(req.originalUrl))
+        console.log('[ERR]', decodeURIComponent(req.originalUrl), {status: answer.status, body: answer.body})
         if(answer.body.code == '301') answer.body.msg = '需要登录'
         res.append('Set-Cookie', answer.cookie)
         res.status(answer.status).send(answer.body)
